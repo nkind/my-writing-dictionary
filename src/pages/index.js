@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { makeStyles } from "@material-ui/core/styles";
 
 import alphabet from "../images/alphabet.svg";
-import Form from "../components/form";
+import OrderForm from "../components/orderForm";
 
 export default function Index() {
   const classes = useStyles();
@@ -18,7 +18,7 @@ export default function Index() {
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
       </Helmet>
-      <Form />
+      <OrderForm />
 
       <div className={classes.backImage} />
     </div>
