@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import clsx from "clsx";
 import { Form, Field } from "react-final-form";
+import formatString from "format-string-by-pattern";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
@@ -13,14 +15,47 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
+// Form fields that don't need a formatting mask
+const standardFields = [
+  { name: "firstName", label: "First name", type: "text" },
+  { name: "lastName", label: "Last name", type: "text" },
+  { name: "email", label: "Email", type: "email" },
+];
+
+// Fields that display in common format
+const phoneMask = {
+  name: "phonenumber",
+  label: "Phone Number",
+  parse: "(999) 999-9999",
+  type: "tel",
+};
+
+const postalCodeMask = {
+  name: "postalcode",
+  label: "Postal Code",
+  parse: "XXX XXX",
+  type: "text",
+};
+
+// Select options for languages
+const languageOptions = [
+  { label: "English", value: "ENG" },
+  { label: "French", value: "FR" },
+];
+
 export default function OrderForm() {
   const classes = useStyles();
   const theme = useTheme();
 
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [language, setLanguage] = useState("ENG");
 
   const handleFormToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleSelectChange = (event) => {
+    setLanguage(event.target.value);
   };
 
   const onSubmit = async (values) => {
@@ -44,7 +79,7 @@ export default function OrderForm() {
       undefined,
     );
 
-  // Contact form for sending out emails
+  // Contact form
   const formDrawer = () => {
     return (
       <div>
@@ -56,73 +91,159 @@ export default function OrderForm() {
         <Form
           onSubmit={onSubmit}
           render={({ handleSubmit, form, submitting, pristine, values }) => (
-            <form onSubmit={handleSubmit}>
-              <div className={classes.formRow}>
-                <Field name="firstName" validate={required}>
-                  {({ input, meta }) => (
-                    <div>
-                      <TextField
-                        {...input}
-                        label="First name"
-                        placeholder="First name"
-                        required
-                        error={meta.error && meta.touched}
-                      />
-                    </div>
-                  )}
-                </Field>
-                <Field name="lastName" validate={required}>
-                  {({ input, meta }) => (
-                    <div>
-                      <TextField
-                        {...input}
-                        label="Last name"
-                        placeholder="Last name"
-                        required
-                        error={meta.error && meta.touched}
-                      />
-                    </div>
-                  )}
-                </Field>
-              </div>
-              <div className={classes.formRow} style={{ marginTop: 15 }}>
-                <Field name="email" validate={required}>
-                  {({ input, meta }) => (
-                    <div>
-                      <TextField
-                        {...input}
-                        label="Email"
-                        placeholder="email@real.com"
-                        required
-                        error={meta.error && meta.touched}
-                      />
-                    </div>
-                  )}
-                </Field>
+            <form
+              onSubmit={handleSubmit}
+              autoComplete="off"
+              className={classes.message}
+            >
+              <>
+                {standardFields.map((field) => (
+                  <div key={field.name}>
+                    <Field
+                      name={field.name}
+                      validate={required}
+                      type={field.type}
+                    >
+                      {({ input, meta }) => (
+                        <div>
+                          <TextField
+                            {...input}
+                            label={field.label}
+                            placeholder={field.label}
+                            required
+                            error={meta.touched && meta.error}
+                          />
+                        </div>
+                      )}
+                    </Field>
+                  </div>
+                ))}
                 <Field
-                  name="amount"
-                  validate={composeValidators(minValue(1), maxValue(99))}
+                  name={phoneMask.name}
+                  validate={required}
+                  type={phoneMask.type}
+                  parse={formatString(phoneMask.parse)}
                 >
                   {({ input, meta }) => (
                     <div>
                       <TextField
                         {...input}
-                        type="number"
-                        label="Order amount"
-                        error={meta.error && meta.touched}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
+                        label={phoneMask.label}
+                        placeholder={phoneMask.parse}
+                        required
+                        error={meta.touched && meta.error}
                       />
+                    </div>
+                  )}
+                </Field>
+                <div className={classes.formRow}>
+                  <Field name="address" validate={required} type="text">
+                    {({ input, meta }) => (
                       <div>
-                        {meta.touched && meta.error && (
-                          <span style={{ color: "red" }}>{meta.error}</span>
-                        )}
+                        <TextField
+                          {...input}
+                          label="Address"
+                          placeholder="Address"
+                          required
+                          error={meta.touched && meta.error}
+                          style={{ width: "12rem" }}
+                        />
                       </div>
+                    )}
+                  </Field>
+                  <Field
+                    name={postalCodeMask.name}
+                    validate={required}
+                    type={postalCodeMask.type}
+                    parse={formatString(postalCodeMask.parse)}
+                  >
+                    {({ input, meta }) => (
+                      <div>
+                        <TextField
+                          {...input}
+                          label={postalCodeMask.label}
+                          placeholder={postalCodeMask.parse}
+                          required
+                          error={meta.touched && meta.error}
+                          style={{ width: "80%" }}
+                        />
+                      </div>
+                    )}
+                  </Field>
+                </div>
+                <div className={classes.formRow}>
+                  <Field name="language">
+                    {({ input }) => (
+                      <div>
+                        <TextField
+                          {...input}
+                          select
+                          label="Language Options"
+                          defaultValue={"ENG"}
+                          value={language}
+                          onChange={handleSelectChange}
+                          required
+                          SelectProps={{
+                            native: true,
+                          }}
+                          style={{ width: "12rem" }}
+                        >
+                          {languageOptions.map(({ label, value }) => (
+                            <option key={value} value={value}>
+                              {label}
+                            </option>
+                          ))}
+                        </TextField>
+                      </div>
+                    )}
+                  </Field>
+                  <Field
+                    name="amount"
+                    validate={composeValidators(minValue(1), maxValue(999))}
+                    type="number"
+                  >
+                    {({ input, meta }) => (
+                      <div>
+                        <TextField
+                          {...input}
+                          label="Order amount"
+                          placeholder="Amount"
+                          fullWidth
+                          onInput={(event) => {
+                            event.target.value = Math.max(
+                              0,
+                              parseInt(event.target.value),
+                            )
+                              .toString()
+                              .slice(0, 3);
+                          }}
+                          error={meta.touched && meta.error}
+                          style={{ width: "80%" }}
+                        />
+                      </div>
+                    )}
+                  </Field>
+                </div>
+              </>
+
+              <div className={clsx(classes.message)} style={{ marginTop: 15 }}>
+                <Field name="message" validate={required}>
+                  {({ input, meta }) => (
+                    <div>
+                      <TextField
+                        {...input}
+                        label="Message"
+                        multiline
+                        rows={8}
+                        variant="filled"
+                        required
+                        error={meta.touched && meta.error}
+                      />
                     </div>
                   )}
                 </Field>
               </div>
+
               <div
                 style={{
                   display: "flex",
@@ -184,7 +305,7 @@ export default function OrderForm() {
               keepMounted: true, // @mui: better open performance on mobile
             }}
           >
-            {formDrawer}
+            {formDrawer()}
           </Drawer>
         </Hidden>
         {/* Persistent drawer on larger screens */}
@@ -237,6 +358,12 @@ const useStyles = makeStyles((theme) => ({
   formRow: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
+  },
+  message: {
+    "& .MuiTextField-root": {
+      margin: theme.spacing(1),
+      width: "52ch",
+    },
   },
 }));
