@@ -15,6 +15,14 @@ module.exports = {
       },
       __key: "images",
     },
+    {
+      resolve: "gatsby-source-filesystem",
+      options: {
+        name: "media",
+        path: "./src/media/",
+      },
+      __key: "media",
+    },
     "gatsby-plugin-material-ui",
     "gatsby-plugin-react-helmet",
   ],

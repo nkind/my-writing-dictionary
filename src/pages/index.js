@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -8,11 +8,33 @@ import CardActions from "@material-ui/core/CardActions";
 // import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import Dialog from "@material-ui/core/Dialog";
+import Divider from "@material-ui/core/Divider";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import Slide from "@material-ui/core/Slide";
 import alphabet from "../images/alphabet.svg";
 import OrderForm from "../components/orderForm";
+import SameplePdf from "../media/sample.pdf";
+
+const Transition = React.forwardRef((props, ref) => {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default function Index() {
+  const [open, setOpen] = useState(false);
+
   const classes = useStyles();
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -37,17 +59,44 @@ export default function Index() {
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Button size="small" color="primary">
+          <Button size="small" color="primary" onClick={handleOpen}>
             Sample
           </Button>
         </CardActions>
       </Card>
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <AppBar className={classes.dialogBar}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography>My Writing Dictionary Sample</Typography>
+          </Toolbar>
+        </AppBar>
+        <div style={{ overflow: "hidden" }}>
+          <iframe
+            title="pdfsample"
+            src={SameplePdf}
+            style={{ width: "100%", height: "100vh" }}
+          />
+        </div>
+      </Dialog>
       <OrderForm />
     </div>
   );
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexShrink: 0,
@@ -66,5 +115,21 @@ const useStyles = makeStyles(() => ({
     width: "100vw",
     position: "fixed",
     zIndex: 0,
+  },
+  modal: {
+    backgroundColor: "#fff",
+    left: 0,
+    position: "fixed",
+    top: 0,
+    height: "100%",
+    width: "100%",
+    zIndex: 9999,
+  },
+  dialogBar: {
+    position: "relative",
+  },
+  dialogTitle: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
   },
 }));
