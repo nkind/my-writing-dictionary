@@ -266,14 +266,20 @@ export default function OrderForm() {
                   marginTop: 30,
                 }}
               >
-                <Button type="submit" disable={submitting} variant="contained">
+                <Button
+                  type="submit"
+                  disable={submitting}
+                  variant="contained"
+                  style={{ backgroundColor: "#19F4FF" }}
+                >
                   Submit
                 </Button>
                 <Button
                   type="button"
                   onClick={form.reset}
                   disabled={submitting || pristine}
-                  variant="outlined"
+                  variant="contained"
+                  style={{ backgroundColor: "#eee" }}
                 >
                   Reset
                 </Button>

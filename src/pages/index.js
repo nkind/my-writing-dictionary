@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
@@ -12,6 +12,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import alphabet from "../images/alphabet.svg";
 import OrderForm from "../components/orderForm";
 import SameplePdf from "../media/sample.pdf";
@@ -21,7 +22,9 @@ const Transition = React.forwardRef((props, ref) => {
 });
 
 export default function Index() {
+  const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
 
   const classes = useStyles();
 
@@ -51,7 +54,13 @@ export default function Index() {
           <Typography>It's a book to make lil guys write good.</Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" color="primary" onClick={handleOpen}>
+          <Button
+            target={matchesSM ? "_blank" : undefined}
+            href={matchesSM ? SameplePdf : undefined}
+            size="small"
+            color="primary"
+            onClick={matchesSM ? undefined : handleOpen}
+          >
             Sample
           </Button>
         </CardActions>
@@ -97,10 +106,13 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   cardRoot: {
-    marginTop: "20%",
     zIndex: 1,
     backgroundColor: "#FFF",
     opacity: 1,
+    marginTop: "60%",
+    [theme.breakpoints.up("sm")]: {
+      marginTop: "20%",
+    },
   },
   backImage: {
     backgroundImage: `url(${alphabet})`,
