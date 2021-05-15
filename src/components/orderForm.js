@@ -14,6 +14,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 // Form fields that don't need a formatting mask
 const standardFields = [
@@ -46,6 +48,7 @@ const languageOptions = [
 export default function OrderForm() {
   const classes = useStyles();
   const theme = useTheme();
+  const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [language, setLanguage] = useState("ENG");
@@ -83,7 +86,13 @@ export default function OrderForm() {
   const formDrawer = () => {
     return (
       <div>
-        <div className={classes.toolbar} />
+        <div className={classes.toolbar}>
+          <Hidden smUp implementation="js">
+            <IconButton onClick={handleFormToggle} style={{ margin: "auto" }}>
+              <ChevronRightIcon height={32} width={32} />
+            </IconButton>
+          </Hidden>
+        </div>
         <Divider />
         <Typography variant="h6" align="center">
           Contact us to learn more or order now
@@ -165,7 +174,10 @@ export default function OrderForm() {
                           placeholder={postalCodeMask.parse}
                           required
                           error={meta.touched && meta.error}
-                          style={{ width: "80%" }}
+                          style={{
+                            width: matchesSM ? "90%" : "80%",
+                            float: matchesSM ? "right" : undefined,
+                          }}
                         />
                       </div>
                     )}
@@ -218,7 +230,10 @@ export default function OrderForm() {
                               .slice(0, 3);
                           }}
                           error={meta.touched && meta.error}
-                          style={{ width: "80%" }}
+                          style={{
+                            width: matchesSM ? "90%" : "80%",
+                            float: matchesSM ? "right" : undefined,
+                          }}
                         />
                       </div>
                     )}
@@ -263,7 +278,6 @@ export default function OrderForm() {
                   Reset
                 </Button>
               </div>
-              <pre>{JSON.stringify(values, 0, 2)}</pre>
             </form>
           )}
         />
@@ -295,7 +309,7 @@ export default function OrderForm() {
         <Hidden smUp implementation="js">
           <Drawer
             variant="temporary"
-            anchor={theme.direction === "ltr" ? "left" : "right"}
+            anchor={theme.direction === "rtl" ? "left" : "right"}
             open={mobileOpen}
             onClose={handleFormToggle}
             classes={{
@@ -333,6 +347,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   form: {
+    width: "100%",
     [theme.breakpoints.up("sm")]: {
       width: formWidth,
       flexShrink: 0,
@@ -346,14 +361,17 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   menuButton: {
-    marginLeft: theme.spacing(1),
+    marginLeft: "auto",
     [theme.breakpoints.up("sm")]: {
       display: "none",
     },
   },
   toolbar: theme.mixins.toolbar,
   formPaper: {
-    width: formWidth,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: formWidth,
+    },
   },
   formRow: {
     display: "flex",
@@ -362,8 +380,11 @@ const useStyles = makeStyles((theme) => ({
   },
   message: {
     "& .MuiTextField-root": {
-      margin: theme.spacing(1),
-      width: "52ch",
+      width: "100%",
+      [theme.breakpoints.up("sm")]: {
+        margin: theme.spacing(1),
+        width: "52ch",
+      },
     },
   },
 }));

@@ -3,13 +3,10 @@ import { Helmet } from "react-helmet";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
-// import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
-import Divider from "@material-ui/core/Divider";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -48,16 +45,11 @@ export default function Index() {
       </Helmet>
       <div className={classes.backImage} />
 
-      <Card
-        className={classes.cardRoot}
-        style={{ backgroundColor: "white", opacity: 1 }}
-      >
-        <CardActionArea>
-          <CardContent>
-            <Typography>What is My Writing Dictionary?</Typography>
-            <Typography>It's a book to make lil guys write good.</Typography>
-          </CardContent>
-        </CardActionArea>
+      <Card className={classes.cardRoot}>
+        <CardContent>
+          <Typography>What is My Writing Dictionary?</Typography>
+          <Typography>It's a book to make lil guys write good.</Typography>
+        </CardContent>
         <CardActions>
           <Button size="small" color="primary" onClick={handleOpen}>
             Sample
@@ -80,7 +72,9 @@ export default function Index() {
             >
               <CloseIcon />
             </IconButton>
-            <Typography>My Writing Dictionary Sample</Typography>
+            <Typography variant="h6" noWrap className={classes.dialogTitle}>
+              My Writing Dictionary Sample
+            </Typography>
           </Toolbar>
         </AppBar>
         <div style={{ overflow: "hidden" }}>
@@ -105,6 +99,8 @@ const useStyles = makeStyles((theme) => ({
   cardRoot: {
     marginTop: "20%",
     zIndex: 1,
+    backgroundColor: "#FFF",
+    opacity: 1,
   },
   backImage: {
     backgroundImage: `url(${alphabet})`,
@@ -116,16 +112,8 @@ const useStyles = makeStyles((theme) => ({
     position: "fixed",
     zIndex: 0,
   },
-  modal: {
-    backgroundColor: "#fff",
-    left: 0,
-    position: "fixed",
-    top: 0,
-    height: "100%",
-    width: "100%",
-    zIndex: 9999,
-  },
   dialogBar: {
+    backgroundColor: "#00adb5",
     position: "relative",
   },
   dialogTitle: {
