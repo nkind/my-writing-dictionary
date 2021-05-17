@@ -13,6 +13,14 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
+import CreateIcon from "@material-ui/icons/Create";
+import LocalLibraryIcon from "@material-ui/icons/LocalLibrary";
+import SearchIcon from "@material-ui/icons/Search";
 import alphabet from "../images/alphabet.svg";
 import OrderForm from "../components/orderForm";
 import SameplePdf from "../media/sample.pdf";
@@ -20,6 +28,13 @@ import SameplePdf from "../media/sample.pdf";
 const Transition = React.forwardRef((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+const description = {
+  1: "To introduce the student to basic dictionary skills through practice in locating words in alphabetical order and ensuring correct spelling.",
+  2: "To help each student to become self-reliant in finding words for creative writing and spelling them correctly.",
+  3: "To provide each student with an opportunity to enlarge their writing words list by adding in the spaces provided words they have acquired from other sources.",
+  4: "To provide practice in finding words classified by subject headings.",
+};
 
 export default function Index() {
   const theme = useTheme();
@@ -50,16 +65,46 @@ export default function Index() {
 
       <Card className={classes.cardRoot}>
         <CardContent>
-          <Typography>What is My Writing Dictionary?</Typography>
-          <Typography>It's a book to make lil guys write good.</Typography>
+          <Typography variant="h6">
+            "My Writing Dictionary" is recommended for students in Division One
+            with the following objectives in mind:
+          </Typography>
+          <List>
+            <ListItem>
+              <ListItemIcon>
+                <BookmarkIcon />
+              </ListItemIcon>
+              <ListItemText primary={description[1]} />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <CreateIcon />
+              </ListItemIcon>
+              <ListItemText primary={description[2]} />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <LocalLibraryIcon />
+              </ListItemIcon>
+              <ListItemText primary={description[3]} />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <SearchIcon />
+              </ListItemIcon>
+              <ListItemText primary={description[4]} />
+            </ListItem>
+          </List>
         </CardContent>
         <CardActions>
           <Button
             target={matchesSM ? "_blank" : undefined}
             href={matchesSM ? SameplePdf : undefined}
-            size="small"
             color="primary"
             onClick={matchesSM ? undefined : handleOpen}
+            variant="contained"
+            style={{ backgroundColor: "#00adb5" }}
+            fullWidth
           >
             Sample
           </Button>
@@ -110,8 +155,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#FFF",
     opacity: 1,
     marginTop: "60%",
+    maxWidth: "50rem",
     [theme.breakpoints.up("sm")]: {
-      marginTop: "20%",
+      marginTop: "30vh",
     },
   },
   backImage: {

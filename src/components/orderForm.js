@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import clsx from "clsx";
 import { Form, Field } from "react-final-form";
 import formatString from "format-string-by-pattern";
+import axios from "axios";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
@@ -52,6 +53,12 @@ export default function OrderForm() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [language, setLanguage] = useState("ENG");
+  const [serverState, setServerState] = useState({
+    submitting: false,
+    status: null,
+  });
+
+  console.log(serverState);
 
   const handleFormToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -61,8 +68,34 @@ export default function OrderForm() {
     setLanguage(event.target.value);
   };
 
-  const onSubmit = async (values) => {
-    window.alert(JSON.stringify(values, 0, 2));
+  const handleServerResponse = (ok, msg, form) => {
+    setServerState({
+      submitting: false,
+      status: { ok, msg },
+    });
+    if (ok) {
+      form.reset();
+    }
+
+    console.log(serverState);
+  };
+
+  const handleSubmit = (event) => {
+    const form = event.target;
+    setServerState({ submitting: true });
+    axios({
+      method: "post",
+      url: "https://getform.io/f/d1bbbd0d-1f16-443b-b456-86a433f2c922",
+      data: new FormData(form),
+    })
+      .then(() => {
+        handleServerResponse(true, "Message Sent!", form);
+      })
+      .catch((e) => {
+        handleServerResponse(false, e, form);
+      });
+
+    return false;
   };
 
   // Form validation
@@ -98,12 +131,14 @@ export default function OrderForm() {
           Contact us to learn more or order now
         </Typography>
         <Form
-          onSubmit={onSubmit}
-          render={({ handleSubmit, form, submitting, pristine, values }) => (
+          onSubmit={handleSubmit}
+          render={({ form, submitting, pristine }) => (
             <form
-              onSubmit={handleSubmit}
               autoComplete="off"
+              method="post"
+              action="https://getform.io/f/d1bbbd0d-1f16-443b-b456-86a433f2c922"
               className={classes.message}
+              onSubmit={handleSubmit}
             >
               <>
                 {standardFields.map((field) => (
@@ -270,7 +305,7 @@ export default function OrderForm() {
                   type="submit"
                   disable={submitting}
                   variant="contained"
-                  style={{ backgroundColor: "#19F4FF" }}
+                  style={{ backgroundColor: "#00adb5", color: "#fff" }}
                 >
                   Submit
                 </Button>
