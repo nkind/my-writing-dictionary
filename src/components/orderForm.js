@@ -315,6 +315,7 @@ export default function OrderForm() {
                   variant="contained"
                   size={matchesXS ? "small" : "large"}
                   style={{ backgroundColor: "#00adb5", color: "#fff" }}
+                  className={classes.formButton}
                 >
                   Submit
                 </Button>
@@ -325,6 +326,7 @@ export default function OrderForm() {
                   variant="contained"
                   size={matchesXS ? "small" : "large"}
                   style={{ backgroundColor: "#eee" }}
+                  className={classes.formButton}
                 >
                   Reset
                 </Button>
@@ -445,6 +447,11 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down("xs")]: {
       marginBottom: 8,
+    },
+  },
+  formButton: {
+    [theme.breakpoints.down("xs")]: {
+      marginBottom: 12,
     },
   },
 }));
