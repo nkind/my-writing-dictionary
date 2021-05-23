@@ -19,7 +19,6 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/styles": "^4.11.3",
     "axios": "^0.21.1",
-    "clsx": "^1.1.1",
     "final-form": "^4.20.2",
     "format-string-by-pattern": "^1.2.2",
     "gatsby": "^3.3.1",
