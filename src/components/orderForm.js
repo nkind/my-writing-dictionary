@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import clsx from "clsx";
 import { Form, Field } from "react-final-form";
 import formatString from "format-string-by-pattern";
 import axios from "axios";
@@ -50,6 +49,7 @@ export default function OrderForm() {
   const classes = useStyles();
   const theme = useTheme();
   const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
+  const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [language, setLanguage] = useState("ENG");
@@ -57,8 +57,6 @@ export default function OrderForm() {
     submitting: false,
     status: null,
   });
-
-  console.log(serverState);
 
   const handleFormToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -75,9 +73,9 @@ export default function OrderForm() {
     });
     if (ok) {
       form.reset();
+    } else {
+      console.warn(msg);
     }
-
-    console.log(serverState);
   };
 
   const handleSubmit = (event) => {
@@ -120,7 +118,7 @@ export default function OrderForm() {
     return (
       <div>
         <div className={classes.toolbar}>
-          <Hidden smUp implementation="js">
+          <Hidden mdUp implementation="js">
             <IconButton onClick={handleFormToggle} style={{ margin: "auto" }}>
               <ChevronRightIcon height={32} width={32} />
             </IconButton>
@@ -128,7 +126,7 @@ export default function OrderForm() {
         </div>
         <Divider />
         <Typography variant="h6" align="center">
-          Contact us to learn more or order now
+          Contact us to learn more or submit an order
         </Typography>
         <Form
           onSubmit={handleSubmit}
@@ -140,7 +138,7 @@ export default function OrderForm() {
               className={classes.message}
               onSubmit={handleSubmit}
             >
-              <>
+              <div style={{ margin: matchesSM ? 8 : undefined }}>
                 {standardFields.map((field) => (
                   <div key={field.name}>
                     <Field
@@ -156,6 +154,7 @@ export default function OrderForm() {
                             placeholder={field.label}
                             required
                             error={meta.touched && meta.error}
+                            className={classes.fieldMargin}
                           />
                         </div>
                       )}
@@ -176,6 +175,7 @@ export default function OrderForm() {
                         placeholder={phoneMask.parse}
                         required
                         error={meta.touched && meta.error}
+                        className={classes.fieldMargin}
                       />
                     </div>
                   )}
@@ -190,7 +190,10 @@ export default function OrderForm() {
                           placeholder="Address"
                           required
                           error={meta.touched && meta.error}
-                          style={{ width: "12rem" }}
+                          style={{
+                            width: matchesSM ? "45vw" : "12rem",
+                          }}
+                          className={classes.fieldMargin}
                         />
                       </div>
                     )}
@@ -210,9 +213,10 @@ export default function OrderForm() {
                           required
                           error={meta.touched && meta.error}
                           style={{
-                            width: matchesSM ? "90%" : "80%",
+                            width: matchesSM ? "45vw" : "80%",
                             float: matchesSM ? "right" : undefined,
                           }}
+                          className={classes.fieldMargin}
                         />
                       </div>
                     )}
@@ -233,7 +237,10 @@ export default function OrderForm() {
                           SelectProps={{
                             native: true,
                           }}
-                          style={{ width: "12rem" }}
+                          style={{
+                            width: matchesSM ? "45vw" : "12rem",
+                          }}
+                          className={classes.fieldMargin}
                         >
                           {languageOptions.map(({ label, value }) => (
                             <option key={value} value={value}>
@@ -253,7 +260,7 @@ export default function OrderForm() {
                       <div>
                         <TextField
                           {...input}
-                          label="Order amount"
+                          label="Order Amount"
                           placeholder="Amount"
                           fullWidth
                           onInput={(event) => {
@@ -266,17 +273,18 @@ export default function OrderForm() {
                           }}
                           error={meta.touched && meta.error}
                           style={{
-                            width: matchesSM ? "90%" : "80%",
+                            width: matchesSM ? "45vw" : "80%",
                             float: matchesSM ? "right" : undefined,
                           }}
+                          className={classes.fieldMargin}
                         />
                       </div>
                     )}
                   </Field>
                 </div>
-              </>
+              </div>
 
-              <div className={clsx(classes.message)} style={{ marginTop: 15 }}>
+              <div className={classes.message} style={{ marginTop: 15 }}>
                 <Field name="message" validate={required}>
                   {({ input, meta }) => (
                     <div>
@@ -303,8 +311,9 @@ export default function OrderForm() {
               >
                 <Button
                   type="submit"
-                  disable={submitting}
+                  disable={submitting || serverState.submitting}
                   variant="contained"
+                  size={matchesXS ? "small" : "large"}
                   style={{ backgroundColor: "#00adb5", color: "#fff" }}
                 >
                   Submit
@@ -314,6 +323,7 @@ export default function OrderForm() {
                   onClick={form.reset}
                   disabled={submitting || pristine}
                   variant="contained"
+                  size={matchesXS ? "small" : "large"}
                   style={{ backgroundColor: "#eee" }}
                 >
                   Reset
@@ -347,7 +357,7 @@ export default function OrderForm() {
       </AppBar>
       <div className={classes.form} aria-label="form details">
         {/* Only toggle drawer on small screen sizes */}
-        <Hidden smUp implementation="js">
+        <Hidden lgUp implementation="js">
           <Drawer
             variant="temporary"
             anchor={theme.direction === "rtl" ? "left" : "right"}
@@ -364,7 +374,7 @@ export default function OrderForm() {
           </Drawer>
         </Hidden>
         {/* Persistent drawer on larger screens */}
-        <Hidden xsDown implementation="js">
+        <Hidden mdDown implementation="js">
           <Drawer
             classes={{
               paper: classes.formPaper,
@@ -389,28 +399,28 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: "100%",
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("lg")]: {
       width: formWidth,
       flexShrink: 0,
     },
   },
   appBar: {
     backgroundColor: "#00adb5",
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("lg")]: {
       width: `calc(100% - ${formWidth}px)`,
       marginRight: formWidth,
     },
   },
   menuButton: {
     marginLeft: "auto",
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("lg")]: {
       display: "none",
     },
   },
   toolbar: theme.mixins.toolbar,
   formPaper: {
     width: "100%",
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("lg")]: {
       width: formWidth,
     },
   },
@@ -422,10 +432,19 @@ const useStyles = makeStyles((theme) => ({
   message: {
     "& .MuiTextField-root": {
       width: "100%",
-      [theme.breakpoints.up("sm")]: {
+      [theme.breakpoints.up("lg")]: {
         margin: theme.spacing(1),
         width: "52ch",
       },
+    },
+  },
+  fieldMargin: {
+    marginBottom: 0,
+    [theme.breakpoints.down("sm")]: {
+      marginBottom: 12,
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginBottom: 8,
     },
   },
 }));

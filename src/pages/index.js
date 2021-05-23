@@ -154,10 +154,11 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
     backgroundColor: "#FFF",
     opacity: 1,
-    marginTop: "60%",
-    maxWidth: "50rem",
+    marginTop: "20%",
+
     [theme.breakpoints.up("sm")]: {
       marginTop: "30vh",
+      maxWidth: "50rem",
     },
   },
   backImage: {
